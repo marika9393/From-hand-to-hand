@@ -1,30 +1,50 @@
 package com.project.books.user;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.project.books.address.UserAddress;
+import com.project.books.booking.Booking;
+import com.project.books.books.Books;
+import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long userId;
+
+    @NotNull
     private String name;
     private String surname;
+    @NotNull
     private String login;
+    @Length(min = 5)
     private String password;
-    private String address;
-    private String dateOfRegistration;
+    @Email
+    private String email;
+    private LocalDateTime dateOfRegistration;
+
+    @ManyToOne
+    private UserAddress userAddress;
+
+    @OneToMany
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Books> books;
+
+    @OneToMany
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    private List<Booking> bookings;
 
 }
