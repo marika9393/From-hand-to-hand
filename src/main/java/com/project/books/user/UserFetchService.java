@@ -13,7 +13,7 @@ public class UserFetchService {
     final UserRepository userRepository;
 
 
-    List<User> fetchAllUser(){
+    List<User> fetchAllUser() {
         return userRepository.findAll();
     }
 

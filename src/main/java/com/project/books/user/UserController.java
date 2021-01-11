@@ -49,4 +49,9 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(userMapper.mapToUserDto(newUser));
     }
+
+    @DeleteMapping("/user/{id}")
+    public void deleteById(@PathVariable Long id) {
+        userCreateService.deleteById(id);
+    }
 }
