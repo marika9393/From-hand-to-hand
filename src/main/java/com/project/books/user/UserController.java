@@ -15,35 +15,35 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserController {
 
-    final UserFetchService userFetchService;
+    final UserService userService;
     final UserMapper userMapper;
-    final UserCreateService userCreateService;
+
 
     @GetMapping("/users")
-    List<UserDto> getAllUser() {
-        return userFetchService.fetchAllUser()
+    public List<UserDto> getAllUser() {
+        return userService.fetchAllUser()
                 .stream()
                 .map(userMapper::mapToUserDto)
                 .collect(Collectors.toList());
     }
 
     @GetMapping("/user/{id}")
-    UserDto getUserById(@PathVariable Long id) {
-        User user = userFetchService.fetchUserById(id);
+    public UserDto getUserById(@PathVariable Long id) {
+        User user = userService.fetchUserById(id);
         return userMapper.mapToUserDto(user);
     }
 
     @GetMapping("/user/{login}")
-    UserDto getUserByLogin(@PathVariable String login) {
-        User user = userFetchService.fetchUserByLogin(login);
+    public UserDto getUserByLogin(@PathVariable String login) {
+        User user = userService.fetchUserByLogin(login);
         return userMapper.mapToUserDto(user);
     }
 
     @PostMapping("/user")
     @ResponseStatus(HttpStatus.CREATED)
-    ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
+    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto) {
         UserDefinition userDefinition = userMapper.mapToUserDefinition(userDto);
-        User newUser = userCreateService.createUser(userDefinition);
+        User newUser = userService.createUser(userDefinition);
         log.info("create new user: " + newUser);
         return ResponseEntity
                 .status(HttpStatus.CREATED)
@@ -52,6 +52,6 @@ public class UserController {
 
     @DeleteMapping("/user/{id}")
     public void deleteById(@PathVariable Long id) {
-        userCreateService.deleteById(id);
+        userService.deleteById(id);
     }
 }

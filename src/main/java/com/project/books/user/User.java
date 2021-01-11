@@ -23,14 +23,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Long userId;
 
-    @NotNull
+
     private String name;
     private String surname;
-    @NotNull
     private String login;
-    @Length(min = 5)
     private String password;
-    @Email
     private String email;
     private LocalDateTime dateOfRegistration;
 
