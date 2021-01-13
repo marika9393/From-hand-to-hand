@@ -9,10 +9,10 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-public class AddressDto {
+@NoArgsConstructor
+@AllArgsConstructor
+public class AddressDefinition {
 
     Long addressId;
 

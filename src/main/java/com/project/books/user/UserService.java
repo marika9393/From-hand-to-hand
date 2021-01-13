@@ -1,8 +1,9 @@
 package com.project.books.user;
 
+import com.project.books.address.Address;
+import com.project.books.address.AddressService;
 import com.project.books.exception.BadRequestException;
 import com.project.books.exception.NotFoundException;
-import com.project.books.exception.UserAlredyExists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -17,18 +18,19 @@ import java.util.regex.Pattern;
 public class UserService {
 
     final UserRepository userRepository;
+    final AddressService addressService;
 
 
-    List<User> fetchAllUser() {
+    public List<User> fetchAllUser() {
         return userRepository.findAll();
     }
 
-    User fetchUserById(Long id) {
+    public User fetchUserById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Not found user: " + id));
     }
 
-    User fetchUserByLogin(String login) {
+    public User fetchUserByLogin(String login) {
         return userRepository.findByLogin(login);
     }
 
@@ -41,30 +43,31 @@ public class UserService {
         String email = userDefinition.getEmail();
         LocalDateTime dateOfRegistration = LocalDateTime.now();
         LocalDateTime dataConverterOfRegistration = dateConverter(dateOfRegistration);
+        Address address = userDefinition.getAddress();
 
 
-        if(name.isBlank() || name.isEmpty()){
+        if (name.isBlank() || name.isEmpty()) {
             throw new BadRequestException("Pole z imieniem nie może pozostać puste");
 
         }
-        if (surname.isBlank() || surname.isEmpty()){
+        if (surname.isBlank() || surname.isEmpty()) {
             throw new BadRequestException("Pole z nazwiskiem nie może pozostać puste");
         }
-        if (login.isEmpty() || login.isBlank()){
+        if (login.isEmpty() || login.isBlank()) {
             throw new BadRequestException("Pole z loginem nie może pozostać puste");
         }
-        if(password.length() < 5) {
+        if (password.length() < 5) {
             throw new BadRequestException("Hasło musi zawierać conajmniej 5 dowolnych znaków");
         }
-        if (email.isBlank() || email.isEmpty()){
+        if (email.isBlank() || email.isEmpty()) {
             throw new BadRequestException("Pole z adresem e-mail nie może pozostać puste");
         }
-        if (!mailChecker(email)){
-            throw  new BadRequestException("Niepoprawny adres e-mail");
+        if (!mailChecker(email)) {
+            throw new BadRequestException("Niepoprawny adres e-mail");
         }
-        if (loginExistChecker(login)){
-            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
-        }
+//        if (loginExistChecker(login)){
+//            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
+//        }
 
 
         User user = User.builder()
@@ -74,7 +77,10 @@ public class UserService {
                 .password(password)
                 .email(email)
                 .dateOfRegistration(dataConverterOfRegistration)
+                .address(address)
                 .build();
+
+
         return userRepository.save(user);
     }
 
@@ -88,7 +94,7 @@ public class UserService {
         return LocalDateTime.parse(format, dateTimeFormatter);
     }
 
-    private boolean mailChecker(String email){
+    private boolean mailChecker(String email) {
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
         Matcher m = p.matcher(email);
         boolean matchFound = m.matches();
@@ -98,7 +104,7 @@ public class UserService {
 
     private boolean loginExistChecker(String login) {
 
-        if (userRepository.findByLogin(login) != null){
+        if (userRepository.findByLogin(login) != null) {
             System.out.println("Login zajęty");
         }
         return true;

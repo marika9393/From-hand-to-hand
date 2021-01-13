@@ -11,6 +11,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Address {
 
     @Id
@@ -22,7 +23,7 @@ public class Address {
     private String street;
     private String postCode;
 
-    @OneToMany(mappedBy = "userAddress")
+    @OneToMany
     @ToString.Exclude
     @EqualsAndHashCode.Exclude
     private List<User> user;
