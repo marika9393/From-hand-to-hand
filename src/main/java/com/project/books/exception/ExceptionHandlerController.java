@@ -23,4 +23,10 @@ public class ExceptionHandlerController {
     void notFoundException(NotFoundException exception) {
         log.error(exception.getMessage());
     }
+
+    @ExceptionHandler(UserAlredyExists.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    void userAlredyExists(UserAlredyExists exception) {
+        log.error(exception.getMessage());
+    }
 }

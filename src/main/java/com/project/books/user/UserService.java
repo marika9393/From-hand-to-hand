@@ -53,9 +53,6 @@ public class UserService {
         if (login.isEmpty() || login.isBlank()){
             throw new BadRequestException("Pole z loginem nie może pozostać puste");
         }
-//        if (userRepository.findByLogin(userDefinition.getLogin()) != null){
-//            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
-//        }
         if(password.length() < 5) {
             throw new BadRequestException("Hasło musi zawierać conajmniej 5 dowolnych znaków");
         }
@@ -64,6 +61,9 @@ public class UserService {
         }
         if (!mailChecker(email)){
             throw  new BadRequestException("Niepoprawny adres e-mail");
+        }
+        if (loginExistChecker(login)){
+            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
         }
 
 
@@ -94,6 +94,14 @@ public class UserService {
         boolean matchFound = m.matches();
 
         return matchFound;
+    }
+
+    private boolean loginExistChecker(String login) {
+
+        if (userRepository.findByLogin(login) != null){
+            System.out.println("Login zajęty");
+        }
+        return true;
     }
 }
 
