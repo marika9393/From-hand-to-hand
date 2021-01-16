@@ -1,9 +1,9 @@
 package com.project.books.user;
 
 import com.project.books.address.Address;
-import com.project.books.address.AddressService;
 import com.project.books.exception.BadRequestException;
 import com.project.books.exception.NotFoundException;
+import com.project.books.exception.UserAlredyExists;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,10 +18,10 @@ import java.util.regex.Pattern;
 public class UserService {
 
     final UserRepository userRepository;
-    final AddressService addressService;
 
 
     public List<User> fetchAllUser() {
+
         return userRepository.findAll();
     }
 
@@ -31,6 +31,7 @@ public class UserService {
     }
 
     public User fetchUserByLogin(String login) {
+
         return userRepository.findByLogin(login);
     }
 
@@ -65,9 +66,9 @@ public class UserService {
         if (!mailChecker(email)) {
             throw new BadRequestException("Niepoprawny adres e-mail");
         }
-//        if (loginExistChecker(login)){
-//            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
-//        }
+        if (loginExistChecker(login)){
+            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
+        }
 
 
         User user = User.builder()
@@ -109,5 +110,6 @@ public class UserService {
         }
         return true;
     }
+
 }
 

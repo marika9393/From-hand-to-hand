@@ -28,7 +28,7 @@ public class User {
     private String email;
     private LocalDateTime dateOfRegistration;
 
-    @ManyToOne
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Address address;
 
     @OneToMany

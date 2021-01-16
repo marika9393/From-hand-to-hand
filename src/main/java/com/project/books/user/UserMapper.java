@@ -22,6 +22,7 @@ public class UserMapper {
 
     UserDefinition mapToUserDefinition(UserDto userDto) {
         return UserDefinition.builder()
+                .id(userDto.getUserId())
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
                 .login(userDto.getLogin())

@@ -27,7 +27,7 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/user/{id}")
+    @GetMapping("/userid/{id}")
     public UserDto getUserById(@PathVariable Long id) {
         User user = userService.fetchUserById(id);
         return userMapper.mapToUserDto(user);
@@ -49,6 +49,7 @@ public class UserController {
                 .status(HttpStatus.CREATED)
                 .body(userMapper.mapToUserDto(newUser));
     }
+
 
     @DeleteMapping("/user/{id}")
     public void deleteById(@PathVariable Long id) {
