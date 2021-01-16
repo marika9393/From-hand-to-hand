@@ -1,4 +1,4 @@
-package com.project.books.address;
+package com.project.books.user.address;
 
 
 import com.project.books.user.User;

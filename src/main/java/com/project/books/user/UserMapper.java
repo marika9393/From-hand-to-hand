@@ -20,18 +20,4 @@ public class UserMapper {
                 .build();
     }
 
-    UserDefinition mapToUserDefinition(UserDto userDto) {
-        return UserDefinition.builder()
-                .id(userDto.getUserId())
-                .name(userDto.getName())
-                .surname(userDto.getSurname())
-                .login(userDto.getLogin())
-                .password(userDto.getPassword())
-                .email(userDto.getEmail())
-                .dateOfRegistration(userDto.getDateOfRegistration())
-                .address(userDto.getAddress())
-                .books(userDto.getBooks())
-                .booking(userDto.getBooking())
-                .build();
-    }
 }

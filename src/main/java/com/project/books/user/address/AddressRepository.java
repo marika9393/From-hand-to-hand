@@ -1,4 +1,4 @@
-package com.project.books.address;
+package com.project.books.user.address;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

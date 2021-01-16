@@ -1,9 +1,10 @@
 package com.project.books.user;
 
-import com.project.books.address.Address;
-import com.project.books.exception.BadRequestException;
 import com.project.books.exception.NotFoundException;
-import com.project.books.exception.UserAlredyExists;
+import com.project.books.user.address.Address;
+import com.project.books.user.role.Role;
+import com.project.books.user.role.RoleConfiguration;
+import com.project.books.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +19,9 @@ import java.util.regex.Pattern;
 public class UserService {
 
     final UserRepository userRepository;
+    final RoleRepository roleRepository;
+    final RoleConfiguration roleConfiguration;
+    final UserMapper userMapper;
 
 
     public List<User> fetchAllUser() {
@@ -35,40 +39,19 @@ public class UserService {
         return userRepository.findByLogin(login);
     }
 
-    public User createUser(UserDefinition userDefinition) {
+    public UserDto createUser(UserDto userDto) {
+//        Role userRole = new Role();
+//        userRole.setUserRole(roleConfiguration.getDefaultRole());
 
-        String name = userDefinition.getName();
-        String surname = userDefinition.getSurname();
-        String login = userDefinition.getLogin();
-        String password = userDefinition.getPassword();
-        String email = userDefinition.getEmail();
+        String name = userDto.getName();
+        String surname = userDto.getSurname();
+        String login = userDto.getLogin();
+        String password = userDto.getPassword();
+        String email = userDto.getEmail();
+        Address address = userDto.getAddress();
+
         LocalDateTime dateOfRegistration = LocalDateTime.now();
-        LocalDateTime dataConverterOfRegistration = dateConverter(dateOfRegistration);
-        Address address = userDefinition.getAddress();
-
-
-        if (name.isBlank() || name.isEmpty()) {
-            throw new BadRequestException("Pole z imieniem nie może pozostać puste");
-
-        }
-        if (surname.isBlank() || surname.isEmpty()) {
-            throw new BadRequestException("Pole z nazwiskiem nie może pozostać puste");
-        }
-        if (login.isEmpty() || login.isBlank()) {
-            throw new BadRequestException("Pole z loginem nie może pozostać puste");
-        }
-        if (password.length() < 5) {
-            throw new BadRequestException("Hasło musi zawierać conajmniej 5 dowolnych znaków");
-        }
-        if (email.isBlank() || email.isEmpty()) {
-            throw new BadRequestException("Pole z adresem e-mail nie może pozostać puste");
-        }
-        if (!mailChecker(email)) {
-            throw new BadRequestException("Niepoprawny adres e-mail");
-        }
-        if (loginExistChecker(login)){
-            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
-        }
+        LocalDateTime dateConverterOfRegistration = dateConverter(dateOfRegistration);
 
 
         User user = User.builder()
@@ -77,12 +60,15 @@ public class UserService {
                 .login(login)
                 .password(password)
                 .email(email)
-                .dateOfRegistration(dataConverterOfRegistration)
+                .dateOfRegistration(dateConverterOfRegistration)
                 .address(address)
                 .build();
 
+//        if (!roleRepository.findByUserRole(userRole.getUserRole()).isPresent()) {
+//            user.setRole(userRole);
+//        }
 
-        return userRepository.save(user);
+        return userMapper.mapToUserDto(userRepository.save(user));
     }
 
     public void deleteById(Long id) {

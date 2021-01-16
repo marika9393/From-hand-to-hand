@@ -1,8 +1,9 @@
 package com.project.books.user;
 
-import com.project.books.address.Address;
 import com.project.books.booking.Booking;
 import com.project.books.books.Books;
+import com.project.books.user.address.Address;
+import com.project.books.user.role.Role;
 import lombok.*;
 
 import javax.persistence.*;
@@ -30,6 +31,9 @@ public class User {
 
     @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.PERSIST})
     private Address address;
+
+    @ManyToOne
+    private Role role;
 
     @OneToMany
     @ToString.Exclude
