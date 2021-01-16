@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 @Log4j2
 @RestController
 @RequiredArgsConstructor
+//@RequestMapping("/users")
 public class UserController {
 
     final UserService userService;
@@ -26,25 +28,27 @@ public class UserController {
                 .collect(Collectors.toList());
     }
 
-    @GetMapping("/userid/{id}")
+    //http://localhost:8080/daseqw
+    @GetMapping("/users/{id}")
     public UserDto getUserById(@PathVariable Long id) {
         User user = userService.fetchUserById(id);
         return userMapper.mapToUserDto(user);
     }
 
-    @GetMapping("/user/{login}")
-    public UserDto getUserByLogin(@PathVariable String login) {
+    // /users?login=dshihuwerre
+    @GetMapping(value = "/users", params = "login")
+    public UserDto getUserByLogin(@RequestParam String login) {
         User user = userService.fetchUserByLogin(login);
         return userMapper.mapToUserDto(user);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserDto createUser(@RequestBody UserDto userDto) {
+    public UserDto createUser(@Valid @RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
-    @PutMapping("/updateuser")
+    @PutMapping("/users")
     public User updateUser(@RequestBody User user){
         return userService.updateUser(user);
     }
@@ -60,5 +64,13 @@ public class UserController {
     public void deleteById(@PathVariable Long id) {
 
         userService.deleteById(id);
+    }
+
+    @PostMapping("/users/{id}/address/{id}")
+    public void addAddressForUser(@PathVariable Long userId, @PathVariable Long adresId) {
+        //weź użytkownika o danym id
+        //weź adres o danym id
+        //na user.setAddress(adres poprany z pooprzedniej linijki)
+        // zapis to bazy (userRepository.save(user)
     }
 }

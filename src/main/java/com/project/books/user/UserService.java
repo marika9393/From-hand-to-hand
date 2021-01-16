@@ -9,15 +9,20 @@ import com.project.books.user.role.RoleConfiguration;
 import com.project.books.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.project.books.RoleInitializer.DEFAULT_ROLE;
+
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     final UserRepository userRepository;
@@ -44,32 +49,31 @@ public class UserService {
     public UserDto createUser(UserDto userDto) {
 //        Role userRole = new Role();
 //        userRole.setUserRole(roleConfiguration.getDefaultRole());
-
         String name = userDto.getName();
-        String surname = userDto.getSurname();
-        String login = userDto.getLogin();
-        String password = userDto.getPassword();
-        String email = userDto.getEmail();
-        Address address = userDto.getAddress();
+            String surname = userDto.getSurname();
+            String login = userDto.getLogin();
+            String password = userDto.getPassword();
+            String email = userDto.getEmail();
+            Address address = userDto.getAddress();
 
 
-        if (name.isBlank() || name.isEmpty()) {
-            throw new BadRequestException("Pole z imieniem nie może pozostać puste");
-        }
-        if (surname.isBlank() || surname.isEmpty()) {
-            throw new BadRequestException("Pole z nazwiskiem nie może pozostać puste");
-        }
-        if (login.isEmpty() || login.isBlank()) {
-            throw new BadRequestException("Pole z loginem nie może pozostać puste");
-        }
-        if (password.length() < 5) {
-            throw new BadRequestException("Hasło musi zawierać conajmniej 5 dowolnych znaków");
-        }
-        if (email.isBlank() || email.isEmpty()) {
-            throw new BadRequestException("Pole z adresem e-mail nie może pozostać puste");
-        }
-        if (!mailChecker(email)) {
-            throw new BadRequestException("Niepoprawny adres e-mail");
+            if (name.isBlank() || name.isEmpty()) {
+                throw new BadRequestException("Pole z imieniem nie może pozostać puste");
+            }
+            if (surname.isBlank() || surname.isEmpty()) {
+                throw new BadRequestException("Pole z nazwiskiem nie może pozostać puste");
+            }
+            if (login.isEmpty() || login.isBlank()) {
+                throw new BadRequestException("Pole z loginem nie może pozostać puste");
+            }
+            if (password.length() < 5) {
+                throw new BadRequestException("Hasło musi zawierać conajmniej 5 dowolnych znaków");
+            }
+            if (email.isBlank() || email.isEmpty()) {
+                throw new BadRequestException("Pole z adresem e-mail nie może pozostać puste");
+            }
+            if (!mailChecker(email)) {
+                throw new BadRequestException("Niepoprawny adres e-mail");
         }
 //        if (loginExistChecker(login)) {
 //            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
@@ -77,6 +81,8 @@ public class UserService {
 
         LocalDateTime dateOfRegistration = LocalDateTime.now();
         LocalDateTime dateConverterOfRegistration = dateConverter(dateOfRegistration);
+
+
 
 
         User user = User.builder()
@@ -89,10 +95,14 @@ public class UserService {
                 .address(address)
                 .build();
 
+        final Optional<Role> byUserRole = roleRepository.findByUserRole(DEFAULT_ROLE);
+        byUserRole.ifPresent(user::setRole);
+
 //        if (!roleRepository.findByUserRole(userRole.getUserRole()).isPresent()) {
 //            user.setRole(userRole);
 //        }
 
+        // aktualnie -> tworze user == trzorze adres nawet jezeli istnieje
         return userMapper.mapToUserDto(userRepository.save(user));
     }
 

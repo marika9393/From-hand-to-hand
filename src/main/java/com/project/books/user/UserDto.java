@@ -9,6 +9,9 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -19,14 +22,20 @@ import java.util.List;
 public class UserDto {
 
     public Long userId;
+    @NotBlank
     private String name;
     private String surname;
     private String login;
     private String password;
+
+    @Email(message = "email has incorrect format")
+    @NotNull
     private String email;
     private LocalDateTime dateOfRegistration;
     private Address address;
-    private Role role;
-    private List<Books> books;
-    private List<Booking> booking;
+    //private AddressDto address;
+    //private List<BookDto> books;
+//    private Role role;
+//    private List<Books> books;
+//    private List<Booking> booking;
 }
