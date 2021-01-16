@@ -5,6 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.websocket.server.PathParam;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -41,7 +42,17 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
+    }
 
+    @PutMapping("/updateuser")
+    public User updateUser(@RequestBody User user){
+        return userService.updateUser(user);
+    }
+
+    @PostMapping("/user/{userId}/roles/{role}")
+    public UserDto addRoleToUser(@PathVariable Long userId, @PathVariable String role){
+        final User user = userService.fetchUserById(userId);
+        return userService.changeRole(user, role);
     }
 
 

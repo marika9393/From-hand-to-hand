@@ -23,9 +23,4 @@ public class Address {
     private String street;
     private String postCode;
 
-    @OneToMany
-    @ToString.Exclude
-    @EqualsAndHashCode.Exclude
-    private List<User> user;
-
 }

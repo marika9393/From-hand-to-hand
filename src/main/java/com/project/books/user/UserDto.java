@@ -3,6 +3,7 @@ package com.project.books.user;
 import com.project.books.booking.Booking;
 import com.project.books.books.Books;
 import com.project.books.user.address.Address;
+import com.project.books.user.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,6 +26,7 @@ public class UserDto {
     private String email;
     private LocalDateTime dateOfRegistration;
     private Address address;
+    private Role role;
     private List<Books> books;
     private List<Booking> booking;
 }

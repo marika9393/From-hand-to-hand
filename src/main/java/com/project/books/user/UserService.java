@@ -1,6 +1,8 @@
 package com.project.books.user;
 
+import com.project.books.exception.BadRequestException;
 import com.project.books.exception.NotFoundException;
+import com.project.books.exception.UserAlredyExists;
 import com.project.books.user.address.Address;
 import com.project.books.user.role.Role;
 import com.project.books.user.role.RoleConfiguration;
@@ -50,6 +52,29 @@ public class UserService {
         String email = userDto.getEmail();
         Address address = userDto.getAddress();
 
+
+        if (name.isBlank() || name.isEmpty()) {
+            throw new BadRequestException("Pole z imieniem nie może pozostać puste");
+        }
+        if (surname.isBlank() || surname.isEmpty()) {
+            throw new BadRequestException("Pole z nazwiskiem nie może pozostać puste");
+        }
+        if (login.isEmpty() || login.isBlank()) {
+            throw new BadRequestException("Pole z loginem nie może pozostać puste");
+        }
+        if (password.length() < 5) {
+            throw new BadRequestException("Hasło musi zawierać conajmniej 5 dowolnych znaków");
+        }
+        if (email.isBlank() || email.isEmpty()) {
+            throw new BadRequestException("Pole z adresem e-mail nie może pozostać puste");
+        }
+        if (!mailChecker(email)) {
+            throw new BadRequestException("Niepoprawny adres e-mail");
+        }
+//        if (loginExistChecker(login)) {
+//            throw new UserAlredyExists("Użytkownik z podanym loginem już istnieje");
+//        }
+
         LocalDateTime dateOfRegistration = LocalDateTime.now();
         LocalDateTime dateConverterOfRegistration = dateConverter(dateOfRegistration);
 
@@ -97,5 +122,18 @@ public class UserService {
         return true;
     }
 
+    public User updateUser(User user) {
+        return userRepository.save(user);
+    }
+
+    public UserDto changeRole(User user, String role) {
+        Role userRole = new Role();
+        roleConfiguration.getRoles().stream().filter(x -> x.equals(role))
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException("Role not exist: " + role));
+        userRole.setUserRole(role);
+        user.setRole(userRole);
+        return userMapper.mapToUserDto(userRepository.save(user));
+    }
 }
 
