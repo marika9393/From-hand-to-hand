@@ -5,9 +5,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.websocket.server.PathParam;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Log4j2
 @RestController
@@ -20,39 +18,39 @@ public class UserController {
 
     @GetMapping("/users")
     public List<UserDto> getAllUser() {
-        return userService.fetchAllUser()
-                .stream()
-                .map(userMapper::mapToUserDto)
-                .collect(Collectors.toList());
+        return userService.fetchAllUser();
     }
 
-    @GetMapping("/userid/{id}")
+    @GetMapping("/users/{id}")
     public UserDto getUserById(@PathVariable Long id) {
-        User user = userService.fetchUserById(id);
-        return userMapper.mapToUserDto(user);
+        return userService.fetchUserById(id);
     }
 
-    @GetMapping("/user/{login}")
-    public UserDto getUserByLogin(@PathVariable String login) {
-        User user = userService.fetchUserByLogin(login);
-        return userMapper.mapToUserDto(user);
+    @GetMapping(value = "/users", params = "login")
+    public UserDto getUserByLogin(@RequestParam String login) {
+        return userService.fetchUserByLogin(login);
     }
 
-    @PostMapping("/user")
+    @PostMapping("/users")
     @ResponseStatus(HttpStatus.CREATED)
     public UserDto createUser(@RequestBody UserDto userDto) {
         return userService.createUser(userDto);
     }
 
-    @PutMapping("/updateuser")
-    public User updateUser(@RequestBody User user){
+    @PutMapping("/users")
+    public User updateUser(@RequestBody User user) {
         return userService.updateUser(user);
     }
 
     @PostMapping("/user/{userId}/roles/{role}")
-    public UserDto addRoleToUser(@PathVariable Long userId, @PathVariable String role){
-        final User user = userService.fetchUserById(userId);
-        return userService.changeRole(user, role);
+    public UserDto addRoleToUser(@PathVariable Long userId, @PathVariable String role) {
+        final UserDto user = userService.fetchUserById(userId);
+        return userService.changeRole(userMapper.mapToUser(user), role);
+    }
+
+    @PostMapping("/users/{id}/address/{id}")
+    public UserDto addAddressForUser(@PathVariable Long userId, @PathVariable Long addressId) {
+        return userService.addAddressForUser(userId, addressId);
     }
 
 
@@ -62,3 +60,5 @@ public class UserController {
         userService.deleteById(id);
     }
 }
+;
+

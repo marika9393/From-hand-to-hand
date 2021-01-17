@@ -22,8 +22,8 @@ public class Books {
     public Long bookId;
     private String title;
     private String author;
-    private String description;
     private String category;
+    private String isbn;
     private Long noOfVisits;
 
 

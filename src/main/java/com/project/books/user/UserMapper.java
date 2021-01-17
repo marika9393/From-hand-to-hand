@@ -14,9 +14,20 @@ public class UserMapper {
                 .password(newUser.getPassword())
                 .email(newUser.getEmail())
                 .dateOfRegistration(newUser.getDateOfRegistration())
-                .address(newUser.getAddress())
-                .books(newUser.getBooks())
-                .booking(newUser.getBookings())
+                .role(newUser.getRole())
+                .build();
+    }
+
+    User mapToUser(UserDto newUser) {
+        return User.builder()
+                .userId(newUser.getUserId())
+                .name(newUser.getName())
+                .surname(newUser.getSurname())
+                .login(newUser.getLogin())
+                .password(newUser.getPassword())
+                .email(newUser.getEmail())
+                .dateOfRegistration(newUser.getDateOfRegistration())
+                .role(newUser.getRole())
                 .build();
     }
 

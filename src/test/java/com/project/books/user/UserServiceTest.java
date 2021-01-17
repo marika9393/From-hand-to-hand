@@ -43,7 +43,6 @@ public class UserServiceTest {
                 .login("kajaks")
                 .password("markja")
                 .email("klmak@wp.pl")
-                .address(address)
                 .build());
 
         //then
