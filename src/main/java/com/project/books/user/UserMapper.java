@@ -1,9 +1,14 @@
 package com.project.books.user;
 
+import com.project.books.user.address.AddressMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class UserMapper {
+
+    private final AddressMapper addressMapper;
 
     UserDto mapToUserDto(User newUser) {
         return UserDto.builder()
@@ -15,6 +20,7 @@ public class UserMapper {
                 .email(newUser.getEmail())
                 .dateOfRegistration(newUser.getDateOfRegistration())
                 .role(newUser.getRole())
+                //.address(addressMapper.mapToAddressDto(newUser.getAddress()))
                 .build();
     }
 
@@ -28,6 +34,7 @@ public class UserMapper {
                 .email(newUser.getEmail())
                 .dateOfRegistration(newUser.getDateOfRegistration())
                 .role(newUser.getRole())
+                //.address(addressMapper.mapToAddress(newUser.getAddress()))
                 .build();
     }
 

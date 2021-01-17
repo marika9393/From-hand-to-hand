@@ -9,14 +9,19 @@ import com.project.books.user.role.RoleConfiguration;
 import com.project.books.user.role.RoleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static com.project.books.RoleInitializer.DEFAULT_ROLE;
 
 @Component
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     final UserRepository userRepository;
@@ -55,6 +60,7 @@ public class UserService {
         LocalDateTime dateConverterOfRegistration = dateConverter(dateOfRegistration);
 
 
+        // użyty powinien być maper
         User user = User.builder()
                 .name(userDto.getName())
                 .surname(userDto.getSurname())
@@ -65,6 +71,14 @@ public class UserService {
                 .role(userDto.getRole())
                 .build();
 
+        final Optional<Role> byUserRole = roleRepository.findByUserRole(DEFAULT_ROLE);
+        if (byUserRole.isPresent()) {
+            final Role role = byUserRole.get();
+            user.setRole(role);
+        } else {
+            final Role role = roleRepository.save(new Role(null, DEFAULT_ROLE));
+            user.setRole(role);
+        }
 //        if (!roleRepository.findByUserRole(userRole.getUserRole()).isPresent()) {
 //            user.setRole(userRole);
 //        }

@@ -48,8 +48,9 @@ public class UserController {
         return userService.changeRole(userMapper.mapToUser(user), role);
     }
 
-    @PostMapping("/users/{id}/address/{id}")
-    public UserDto addAddressForUser(@PathVariable Long userId, @PathVariable Long addressId) {
+    @PostMapping("/users/{userId}/address/{id_address}")
+    public UserDto addAddressForUser(@PathVariable(name = "userId") Long userId,
+                                     @PathVariable(name = "id_address") Long addressId) {
         return userService.addAddressForUser(userId, addressId);
     }
 
